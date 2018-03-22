@@ -1,29 +1,55 @@
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
+import static org.openqa.selenium.Keys.chord;
+
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
-import static org.openqa.selenium.Keys.chord;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class PrestoShop {
 
-    static int countScreen = 0;
-    static WebDriver driver;
+    private static int countScreen;
+    private static WebDriver driver;
+
+    public static final String imgDir = "E:\\java\\scrnsht\\";
+    private static final SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+
+    static {
+        try {
+            File dir = new File(imgDir);
+
+            if (dir.exists() && dir.isDirectory() && dir.list() != null) {
+                String[] list = dir.list();
+                Arrays.sort(list);
+                String w = list[list.length - 1];
+                String numbers = w.substring(w.length() - 12, w.lastIndexOf("."));
+                countScreen = Integer.parseInt(numbers);
+            }
+        } catch (Exception e) {
+            countScreen = 0;
+        }
+    }
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        System.setProperty("webdriver.chrome.driver","E:\\hachik NE TROGAT\\тестирование\\selenium drivera" +
-                "\\ChromeDriver\\chromedriver_win32\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver","E:\\Java\\chromedriver.exe");
 
 
 
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
+        driver = WebDriverProvider.getDriver();
         String urlPrestoShop = "http://prestashop.qatestlab.com.ua/en/";
         driver.get(urlPrestoShop);
 
@@ -31,41 +57,47 @@ public class PrestoShop {
 
 
 
-       // screensotDo();
+        screensotDo();
         File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenshot,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr.png"));
+        FileUtils.copyFile(screenshot,new File("E:\\java\\scrnsht\\newscr.png"));
 
-        driver.manage().window().setSize(new Dimension(1000,1000));
+        driver.manage().window().maximize();
 
 
         WebElement languege = driver.findElement(By.id("languages-block-top"));
         languege.click();
-        WebElement ukr = (new  WebDriverWait(driver,10))
-                .until(ExpectedConditions
-                .elementToBeClickable(By.xpath("//a[@href='http://prestashop.qatestlab.com.ua/uk/']")));
-        ukr.click();
 
-        //screensotDo();
-        File screenshot1 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenshot1,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr1.png"));
+        String url = driver.getCurrentUrl();
+        String ukrUrl = "http://prestashop.qatestlab.com.ua/uk/";
+
+        if (!url.equals(ukrUrl)) {
+            WebElement ukr = (new WebDriverWait(driver, 10))
+                    .until(ExpectedConditions
+                            .elementToBeClickable(By.xpath("//a[@href='http://prestashop.qatestlab.com.ua/uk/']")));
+            ukr.click();
+        }
+
+        screensotDo();
+        //File screenshot1 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+       // FileUtils.copyFile(screenshot1,new File("E:\\java\\scrnsht\\newscr.png"));
 
         //driver.manage().window().setSize(new Dimension(1000, 1000)); //уменьшение размеров окна
 
         WebElement login = driver.findElement(By.xpath("//a[@class='login']"));
         login.click();
 
-        //screensotDo();
-        File screenshot2 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenshot2,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr2.png"));
+        screensotDo("login");
+        //File screenshot2 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+       // FileUtils.copyFile(screenshot2,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr2.png"));
 
         WebElement createAccaunt = driver.findElement(By.xpath("//input[@id='email_create']"));
 
         Actions builder = new Actions(driver);
         builder.sendKeys(createAccaunt,"seriislon@gmail.com").build().perform();
 
-        //screensotDo();
-        File screenshot3 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenshot3,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr3.png"));
+        screensotDo("createaccaunt");
+       // File screenshot3 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+       // FileUtils.copyFile(screenshot3,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr3.png"));
 
         createAccaunt.submit();
         Thread.sleep(3000);
@@ -123,8 +155,8 @@ public class PrestoShop {
                 .perform();
         //screensotDo();
 
-        File screenshot4 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenshot4,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr4.png"));
+        //File screenshot4 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        //FileUtils.copyFile(screenshot4,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscr4.png"));
 
         WebElement vhod = driver.findElement(By.xpath("//input[@id='email']"));
 
@@ -135,6 +167,8 @@ public class PrestoShop {
 
         WebElement password = driver.findElement(By.xpath("//input[@id='passwd']"));
         password.sendKeys("123456");
+
+        screensotDo();
 
         WebElement vhodParol = driver.findElement(By.xpath("//button[@id='SubmitLogin']//span"));
         vhodParol.click();
@@ -179,11 +213,7 @@ public class PrestoShop {
 
 
         WebElement addTshort = (new WebDriverWait(driver,10)).until(ExpectedConditions
-                .visibilityOfElementLocated(By.xpath("//ul[@id='homefeatured']" +
-                        "//li[@class='ajax_block_product col-xs-12 col-sm-4 col-md-3" +
-                        " first-in-line first-item-of-tablet-line first-item-of-mobile-line']" +
-                        "//div[@class='product-container']//div[@class='right-block']//div[@class='button-container']" +
-                        "//a[@class='button ajax_add_to_cart_button btn btn-default']//span[contains(text(),'У Кошик')]")));
+                .visibilityOfElementLocated(By.xpath("//span[contains(text(),'У Кошик')]")));
         addTshort.click();
 
 
@@ -193,13 +223,13 @@ public class PrestoShop {
         closeAddTshort.click();
         
 
-        WebElement coshikprod = (new WebDriverWait(driver,10)
+        /*WebElement coshikprod = (new WebDriverWait(driver,10)
                         .until(ExpectedConditions.elementToBeClickable(By
-                        .xpath("//span[@class='continue btn btn-default button exclusive-medium']"))));
+                        .xpath("//a[@title='Перейти до кошика']"))));
         Thread.sleep(3000);
-        coshikprod.click();
+        coshikprod.click();*/
 
-        WebElement coshikAlon = driver.findElement(By.xpath("//div[@class='shopping_cart']"));
+        WebElement coshikAlon = driver.findElement(By.xpath("//div[@class='shopping_cart']//a"));
 
         builder.moveToElement(coshikAlon).build().perform();
 
@@ -216,12 +246,20 @@ public class PrestoShop {
 
 
     }
-   /* public static void screensotDo () throws IOException {
+    public static void screensotDo () throws IOException {
 
         File screen  = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screen,new File("E:\\hachik NE TROGAT\\тестирование\\prog\\newscrCount.png" ));
-        countScreen++;
-    }*/
+        String formatMask = imgDir+"newscrCount%08d.png";
+
+        FileUtils.copyFile(screen,new File(String.format(formatMask, ++countScreen)));
+
+    }
+
+    public static void screensotDo(String a) throws IOException {
+        File screen  = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        String time = data.format(System.currentTimeMillis());
+        FileUtils.copyFile(screen,new File(imgDir+time+"_"+a+".png"));
+    }
 
         
     }
