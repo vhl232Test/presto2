@@ -48,7 +48,8 @@ public class PrestoShop {
 
 
 
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
+        driver = WebDriverProvider.getDriver();
         String urlPrestoShop = "http://prestashop.qatestlab.com.ua/en/";
         driver.get(urlPrestoShop);
 
