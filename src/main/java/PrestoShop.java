@@ -14,12 +14,16 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PrestoShop {
-
+    private static final Logger log = LoggerFactory.getLogger(PrestoShop.class);
     private static int countScreen;
     private static WebDriver driver;
 
@@ -56,7 +60,7 @@ public class PrestoShop {
         Thread.sleep(3000);
 
 
-
+        log.info("proba");
         screensotDo();
         File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(screenshot,new File("E:\\java\\scrnsht\\newscr.png"));
@@ -241,7 +245,7 @@ public class PrestoShop {
 
 
 
-
+        driver.close();
 
 
 
