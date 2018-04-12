@@ -4,7 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import com.google.common.annotations.VisibleForTesting;
 @Listeners({ClassForTests.class,ForTestReports.class})
 public class Report {
 	@Test
